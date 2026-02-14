@@ -1629,6 +1629,104 @@ class NewsAnalyzer:
 
         return html_file
 
+    def _prepare_message_analysis_data(
+        self,
+        current_results: Optional[Dict] = None,
+    ) -> List[Dict]:
+        """
+        为消息面分析准备数据
+
+        Args:
+            current_results: 当前抓取的结果
+
+        Returns:
+            List[Dict]: 消息面分析所需的数据
+        """
+        try:
+            # 示例：从当前结果中提取新闻标题和内容
+            return [
+                {
+                    "title": item["title"],
+                    "content": item["content"],
+                }
+                for item in current_results.get("news", [])
+            ]
+        except Exception as e:
+            print(f"[消息分析] 准备数据时出错: {e}")
+            if self.ctx.config.get("DEBUG", False):
+                import traceback
+                traceback.print_exc()
+            return []
+
+    def _run_message_analysis(
+        self,
+        data: List[Dict],
+        interval: int,
+    ) -> List[Dict]:
+        """
+        执行消息面分析
+
+        Args:
+            data: 消息面分析的数据
+            interval: 分析间隔（抓取间隔的 3 倍）
+
+        Returns:
+            List[Dict]: 分析结果
+        """
+        results = []
+        for item in data:
+            # 示例：调用评分机制对每条消息进行评分
+            score = self._score_message(item)
+            results.append({"message": item, "score": score})
+        return results
+
+    def _score_message(self, message: Dict) -> Dict:
+        """
+        对单条消息进行评分
+
+        Args:
+            message: 消息内容
+
+        Returns:
+            Dict: 评分结果
+        """
+        # 示例评分逻辑
+        return {
+            "industry_innovation": "5",  # 假设评分逻辑
+            "message_reliability": "4",
+            "company_relevance": "3",
+            "performance_impact": "5",
+            "overall_score": "4.25",
+        }
+
+    def _generate_report_with_message_analysis(
+        self,
+        stats: List[Dict],
+        total_titles: int,
+        interval: int,
+        current_results: Optional[Dict] = None,
+    ) -> str:
+        """
+        生成包含消息面分析的报告
+
+        Args:
+            stats: 抓取的统计数据
+            total_titles: 总标题数
+            interval: 分析间隔
+            current_results: 当前抓取的结果
+
+        Returns:
+            str: HTML 文件路径
+        """
+        message_data = self._prepare_message_analysis_data(current_results)
+        message_analysis_results = self._run_message_analysis(message_data, interval)
+
+        return self.ctx.generate_html(
+            stats,
+            total_titles,
+            rss_items=message_analysis_results,  # 替换为消息面分析结果
+        )
+
     def run(self) -> None:
         """执行分析流程"""
         try:
