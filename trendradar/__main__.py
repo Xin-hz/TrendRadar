@@ -822,10 +822,12 @@ class NewsAnalyzer:
                 self.ctx.rank_threshold,
             )
 
-        # AI 分析（如果启用，用于 HTML 报告）
+        # AI 分析（如果启用，用于 HTML 报告；有热榜或 RSS 任一有内容即执行）
         ai_result = None
         ai_config = self.ctx.config.get("AI_ANALYSIS", {})
-        if ai_config.get("ENABLED", False) and stats:
+        has_hotlist = bool(stats and any(s.get("titles") for s in stats))
+        has_rss = bool(rss_items and any(s.get("titles") for s in rss_items))
+        if ai_config.get("ENABLED", False) and (has_hotlist or has_rss):
             # 获取模式策略来确定报告类型
             mode_strategy = self._get_mode_strategy()
             report_type = mode_strategy["report_type"]
