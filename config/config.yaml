@@ -259,7 +259,7 @@ notification:
       webhook_url: ""                 # 飞书机器人 webhook URL
 
     dingtalk:
-      webhook_url: "https://oapi.dingtalk.com/robot/send?access_token=61fdc46ebfb33d02f71476c1be1e16e15de15301d96fa66bc17f124105dcd7aa"                 # 钉钉机器人 webhook URL
+      webhook_url: "" #https://oapi.dingtalk.com/robot/send?access_token=61fdc46ebfb33d02f71476c1be1e16e15de15301d96fa66bc17f124105dcd7aa"                 # 钉钉机器人 webhook URL
 
     wework:
       webhook_url: ""                 # 企业微信机器人 webhook URL
